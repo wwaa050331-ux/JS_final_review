@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지바꾸기</title>
+    <style>
+        p {display: flex;}
+        .large {margin: 0; padding: 0; width:600px; height:400px}
+        .small {margin: 0; padding: 0; width:150px; height:100px}
+    </style>
+
+</head>
+<body>
+    <h1>이미지 뷰어</h1>
+    <p><img src="images/pic_1.jpg" id ="cup_img_large" class="large"></p>
+    <p id="list" class="list">
+       <img src="images/pic_1.jpg" id ="cup_img" class="small">
+       <img src="images/pic_2.jpg" id ="cup_img" class="small">
+       <img src="images/pic_3.jpg" id ="cup_img" class="small">
+       <img src="images/pic_4.jpg" id ="cup_img" class="small">
+    </p>
+    <button onclick="insertSmallIamge()">작은 이미지 삽입</button>
+    <script>       
+   
+        let elem=document.querySelector("#cup_img_large");
+        //let list=document.getElementsByClassName("small");
+
+        //for(let x of list)
+        //x.addEventListener('click',changeImage);
+
+        let p=document.getElementById("list");
+        p.addEventListener("click",changeImage);
+
+    function changeImage(e){
+        console.log(e);
+        let img= e.target;
+        elem.setAttribute("src", img.getAttribute("src"));
+    }
+        //Event Property 사용
+        //x.onclick=changeImage;
+        
+    function insertSmallIamge(){
+
+        let imgElem=document.createElement("img");
+        imgElem.setAttribute("src","images/pic_1.jpg");
+        imgElem.className="small";
+        let pElem=document.getElementById("list");
+        console.log(pElem);
+        pElem.appendChild(imgElem);
+    }
+    //
+    </script>
+</body>
+</html>

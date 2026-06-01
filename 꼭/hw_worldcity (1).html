@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>도시 사진 뷰어</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        select {
+            padding: 8px 15px;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        .viewer-container {
+            margin-top: 30px;
+        }
+        img {
+            max-width: 600px;
+            height: 400px;
+            object-fit: cover;
+            border: 8px solid #ffd7f1;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: none; /* 초기에는 이미지를 숨김 */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>세계 도시 사진 뷰어</h2>
+    <select id="countrySelect" onchange="changeCountry()">
+        <option value="">국가를 선택하세요</option>
+        <option value="korea">대한민국</option>
+        <option value="usa">미국</option>
+        <option value="japan">일본</option>
+        <option value="france">프랑스</option>
+        <option value="Taiwan">대만</option>
+    </select>
+
+    <select id="citySelect" onchange="changeCity()">
+        <option value="">도시를 선택하세요</option>
+    </select>
+
+    <div class="viewer-container">
+        <img id="cityImage" src="" alt="도시 사진">
+    </div>
+
+    <script>
+        // 1. 국가별 도시 데이터 및 이미지 경로 정의 (5개 국가, 각 4개 도시)
+        const cityData = {
+            korea: [
+                { name: "서울", img: "/Users/soda/Downloads/대한민국/Seoul, Korea_.jpeg" },
+                { name: "부산", img: "/Users/soda/Downloads/대한민국/Busan.jpeg" },
+                { name: "제주", img: "/Users/soda/Downloads/대한민국/Jeju Island, South Korea.jpeg" },
+                { name: "경주", img: "/Users/soda/Downloads/대한민국/_ (1).jpeg" }
+            ],
+            usa: [
+                { name: "뉴욕", img: "/Users/soda/Downloads/미국/New York City.jpeg" },
+                { name: "로스앤젤레스", img: "/Users/soda/Downloads/미국/_ (1).jpeg" },
+                { name: "시카고", img: "/Users/soda/Downloads/미국/chicago 🫶🏼.jpeg" },
+                { name: "샌프란시스코", img: "/Users/soda/Downloads/미국/_ (2).jpeg" }
+            ],
+            japan: [
+                { name: "도쿄", img: "/Users/soda/Downloads/일본/Instagram.jpeg" },
+                { name: "교토", img: "/Users/soda/Downloads/일본/Kyoto ⛩️.jpeg" },
+                { name: "삿포로", img: "/Users/soda/Downloads/일본/Sapporo, Hokkaido, Japan.jpeg" },
+                { name: "오사카", img: "/Users/soda/Downloads/일본/_ (1).jpeg" }
+               
+            ],
+            france: [
+                { name: "파리", img: "/Users/soda/Downloads/프랑스/Eiffel Tower.jpeg" },
+                { name: "니스", img: "/Users/soda/Downloads/프랑스/Nice, France 🌞🌅.jpeg" },
+                { name: "마르세유", img: "/Users/soda/Downloads/프랑스/_ (1).jpeg" },
+                { name: "리옹", img: "/Users/soda/Downloads/프랑스/Lyon __ France.jpeg" }
+            ],
+            Taiwan: [
+                { name: "타이베이", img: "/Users/soda/Downloads/대만/Taipei 101.jpeg" },
+                { name: "가오슝", img: "/Users/soda/Downloads/대만/0fOs06-9OqG8BS5WirL3kl4aSbZoAYWsqAGiLWaLglEo1-DyvogziFT0NA_5htmEk6JT8SErNTPvXvrqNSvy-w.webp" },
+                { name: "타이중", img: "/Users/soda/Downloads/대만/2019 타이중 🇹🇼.jpeg" },
+                { name: "타이난", img: "/Users/soda/Downloads/대만/_ (1).jpeg" }
+            ]
+        };
+
+        // 2. DOM 요소 선택 (getElementById 및 querySelector 활용)
+        const countrySelect = document.getElementById("countrySelect");
+        const citySelect = document.querySelector("#citySelect");
+        const cityImage = document.getElementById("cityImage");
+
+        /**
+         * 국가가 변경되었을 때 호출되는 onchange 이벤트 핸들러 함수
+         */
+        function changeCountry() {
+            // 기존에 도시 select 박스에 있던 option 요소들을 모두 제거 (removeChild, children 활용)
+            // 첫 번째 기본 문구("-- 도시를 선택하세요 --")만 남기고 모두 삭제함
+            while (citySelect.children.length > 1) {
+                citySelect.removeChild(citySelect.children[1]);
+            }
+
+            // 새로운 국가가 선택되면 기존 이미지는 일단 숨김
+            cityImage.style.display = "none";
+
+            // HTMLSelectElement.selectedIndex 속성을 이용하여 현재 선택된 국가 코드값(value)을 가져옴
+            const selectedCountryIndex = countrySelect.selectedIndex;
+            const selectedCountry = countrySelect.options[selectedCountryIndex].value;
+
+            // 선택된 국가가 없을 경우 함수 종료
+            if (!selectedCountry) return;
+
+            // 선택된 국가에 해당하는 도시 배열을 가져옴
+            const cities = cityData[selectedCountry];
+
+            // 동적으로 <option> 요소를 생성하여 도시 select 박스에 추가 (createElement, appendChild 활용)
+            cities.forEach(function(city) {
+                // <option> 태그 동적 생성
+                const opt = document.createElement("option");
+                // option의 value 속성에 이미지 경로를 저장
+                opt.value = city.img;
+                // option의 텍스트에 도시 이름을 노출
+                opt.textContent = city.name;
+                // 도시 select 박스의 자식 요소로 추가
+                citySelect.appendChild(opt);
+            });
+        }
+
+        /**
+         * 도시가 변경되었을 때 호출되는 onchange 이벤트 핸들러 함수
+         */
+        function changeCity() {
+            // HTMLSelectElement.selectedIndex 속성으로 현재 선택된 도시의 index를 파악
+            const selectedCityIndex = citySelect.selectedIndex;
+            
+            // 선택된 option의 value(즉, 이미지 경로)를 가져옴
+            const imagePath = citySelect.options[selectedCityIndex].value;
+
+            // 기본 안내 문구가 선택되었을 경우 이미지를 숨기고 종료
+            if (!imagePath) {
+                cityImage.style.display = "none";
+                return;
+            }
+
+            // setAttribute()를 사용하여 img 태그의 src 속성을 해당 도시의 이미지 경로로 변경
+            cityImage.setAttribute("src", imagePath);
+            
+            // getAttribute()가 정상 작동하는지 디버깅용으로 콘솔 출력 확인 가능
+            console.log("현재 표시된 이미지 경로: " + cityImage.getAttribute("src"));
+
+            // 이미지가 로드되면 화면에 표시되도록 설정
+            cityImage.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
