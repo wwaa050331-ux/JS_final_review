@@ -11,13 +11,17 @@
 | **`getAttribute()`** | 속성값을 가져옴 | **읽기 (Read / Copy)** | 원본 데이터 유지됨 |
 | **`setAttribute()`** | 속성값을 변경/추가함 | **쓰기 (Write / Update)** | 원본 데이터가 바뀜 |
 
-ex) elem.setAttribute("src", img.getAttribute("src"));
+ex) elem.setAttribute("src", img.getAttribute("src"));  
 
-1단계 (오른쪽: Ctrl + C) 👉 img.getAttribute("src")
-img(내가 방금 클릭한 작은 썸네일 이미지)의 src 주소표를 읽어서 복사합니다.
+1단계 (오른쪽: Ctrl + C) 👉 img.getAttribute("src")  
+
+img(내가 방금 클릭한 작은 썸네일 이미지)의 src 주소표를 읽어서 복사합니다.  
+
 컴퓨터 머릿속: "어, 지금 클릭한 이미지 주소가 "dog.jpg"네? 기억해야지!"
 
-2단계 (왼쪽: Ctrl + V) 👉 elem.setAttribute("src", ...)
+
+2단계 (왼쪽: Ctrl + V) 👉 elem.setAttribute("src", ...)  
+
 복사해 온 주소("dog.jpg")를 elem(화면에 떠 있는 큰 메인 이미지)의 src에다가 덮어쓰기(변경) 합니다.
 컴퓨터 머릿속: "큰 이미지(elem)야, 네 주소 지우고 방금 복사한 "dog.jpg"로 새로 갈아끼워!"
 
@@ -81,7 +85,8 @@ function 슈퍼이벤트() {
 // 2. onclick에는 이 '세트 메뉴' 딱 하나만 연결합니다.
 로봇.onclick = 슈퍼이벤트;
 ```
-**표준 이벤트 모델**
+**표준 이벤트 모델**  
+
 * addEventListener
 EventTarget.addEventListener('eventType','funtionName'[.useCapture]);
 다중 핸들러 지원
@@ -94,7 +99,8 @@ EventTarget.addEventListener('eventType','funtionName'[.useCapture]);
 로봇.addEventListener('click', 불켜기);   // 3번 명령 또 부착! (다 기억함)
 ```
 
-**이벤트 핸들러 내에서의 this**
+**이벤트 핸들러 내에서의 this**  
+
 window 객체
 이벤트가 있을땐 이벤트를 지정(Event.currentTarge랑 같은 기능)
 ```html
@@ -106,8 +112,9 @@ let 버튼 = document.getElementById("my-btn");
 }; (currentTarget)
 ```
 
-**createElement**
-hmtl안에 공간을 만들어줌
+**createElement**  
+
+html 안에 공간을 만들어줌
 코드 예시)
 
 ```html
@@ -123,3 +130,25 @@ newParagraph.style.color = "red";
 // 4. 화면(body)에 최종적으로 탕! 탕! 조립해서 붙인다.
 document.body.appendChild(newParagraph);
 ```
+**🪂 내려가는 길(캡처링) vs 🎈 올라오는 길(버블링)**
+addEventListener 맨 뒤에 붙은 true와 false가 바로 "너 신호가 내려갈 때 반응할래? 올라올 때 반응할래?"를 결정하는 비밀 스위치입니다.  
+
+true (캡처링 스위치): 신호가 목적지로 내려가는 길에 나를 지나가면 즉시 반응해라!  
+
+false (버블링 스위치): 신호가 목적지를 찍고 다시 올라오는 길에 나를 지나가면 반응해라! (아무것도 안 적으면 기본적으로 false가 됩니다.)  
+```html
+// 1. body 변수 (실제로는 false이므로 '버블링' 때 실행됨!)
+body.addEventListener('click', function () { ... }, false);
+
+// 2. p 변수 (true이므로 '캡처링'인 내려갈 때 실행됨!)
+para.addEventListener('click', function () { ... }, true);
+
+// 3. button 변수 (true이므로 목적지 단계에서 실행됨!)
+button.addEventListener('click', function () { ... }, true);
+```
+Handler for paragraph.  (내려갈 때 p가 먼저 낚아챔)  
+
+Handler for button.     (목적지 도착)  
+
+Handler for body.       (올라갈 때 body가 마지막에 낚아챔)
+
